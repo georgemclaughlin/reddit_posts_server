@@ -25,14 +25,22 @@ app.get('/GetRedditTitles', (req, res) => {
 
 
     sw.getSubreddit(req.query.subreddit).getHot({limit: 100}).then(function(data) {
-        var results = {};        
+        var results = [];
         data.forEach((element) => {
+            var dict = {};        
             var words = helperFunctions.titleBreakdown(element.title);
 
             words.forEach(word => {
-                if (results[word] === undefined) results[word] = 1;
-                else results[word]++;
-            })
+                if (dict[word] === undefined) dict[word] = 1;
+                else dict[word]++;
+            });
+
+            Object.keys(dict).forEach(key =>
+                results.push({
+                    text: key,
+                    value: dict[key],
+                })
+            );
 
         });
         res.send(results);
