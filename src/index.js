@@ -11,6 +11,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/GetRedditTitles', (req, res) => {
+    if (!req.query.subreddit || req.query.subreddit === "") throw new Error("Cannot input empty subreddit name.");
+
+    // An example url input is: http://localhost:3001/GetRedditTitles?subreddit=all
+    res.send(`The subreddit you input in the url is: ${req.query.subreddit}`);
 });
 
 app.listen(process.env.PORT, () =>
