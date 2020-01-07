@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/GetRedditTitles', (req, res) => {
-    if (!req.query.subreddit || req.query.subreddit === "") throw new Error("Cannot input empty subreddit name.");
+    if (!req.query.subreddit || req.query.subreddit === "") res.status(500).send("Cannot input empty subreddit name.");
 
     const sw = helperFunctions.createSnoowrap({
         userAgent: process.env.USER_AGENT,
@@ -25,25 +25,27 @@ app.get('/GetRedditTitles', (req, res) => {
 
 
     sw.getSubreddit(req.query.subreddit).getHot({limit: 100}).then(function(data) {
-        var results = [];
-        data.forEach((element) => {
-            var dict = {};        
-            var words = helperFunctions.titleBreakdown(element.title);
+            if (data.length === 0) res.status(500).send("No data in this subreddit.");
 
-            words.forEach(word => {
-                if (dict[word] === undefined) dict[word] = 1;
-                else dict[word]++;
+            var results = [];
+            data.forEach((element) => {
+                var dict = {};        
+                var words = helperFunctions.titleBreakdown(element.title);
+
+                words.forEach(word => {
+                    if (dict[word] === undefined) dict[word] = 1;
+                    else dict[word]++;
+                });
+
+                Object.keys(dict).forEach(key =>
+                    results.push({
+                        text: key,
+                        value: dict[key],
+                    })
+                );
+
             });
-
-            Object.keys(dict).forEach(key =>
-                results.push({
-                    text: key,
-                    value: dict[key],
-                })
-            );
-
-        });
-        res.send(results);
+            res.send(results);
     });
 
 });
