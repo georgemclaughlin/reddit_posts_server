@@ -46,6 +46,8 @@ app.get('/GetRedditTitles', (req, res) => {
 
             });
             res.send(results);
+    }).catch((e) => {
+        res.status(e.statusCode).send(e.message);
     });
 
 });
