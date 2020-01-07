@@ -27,24 +27,26 @@ app.get('/GetRedditTitles', (req, res) => {
     sw.getSubreddit(req.query.subreddit).getHot({limit: 100}).then(function(data) {
             if (data.length === 0) res.status(500).send("No data in this subreddit.");
 
-            var results = [];
+            var dict = {};        
+
             data.forEach((element) => {
-                var dict = {};        
                 var words = helperFunctions.titleBreakdown(element.title);
 
                 words.forEach(word => {
-                    if (dict[word] === undefined) dict[word] = 1;
+                    if (!(word in dict)) dict[word] = 1;
                     else dict[word]++;
                 });
-
-                Object.keys(dict).forEach(key =>
-                    results.push({
-                        text: key,
-                        value: dict[key],
-                    })
-                );
-
             });
+
+            var results = [];
+
+            Object.keys(dict).forEach(key =>
+                results.push({
+                    text: key,
+                    value: dict[key],
+                })
+            );
+            
             res.send(results);
     }).catch((e) => {
         res.status(e.statusCode).send(e.message);
