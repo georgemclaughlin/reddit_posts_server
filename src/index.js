@@ -25,14 +25,12 @@ app.get('/GetRedditTitles', (req, res) => {
 
 
     sw.getSubreddit(req.query.subreddit).getHot({limit: 100}).then(function(data) {
-            if (data.length === 0) res.status(500).send("No data in this subreddit.");
+            if (data.length === 0) res.status(404).send("Requested resource not found.");
 
             var dict = {};        
 
             data.forEach((element) => {
-                var words = helperFunctions.titleBreakdown(element.title);
-
-                words.forEach(word => {
+                helperFunctions.titleBreakdown(element.title).forEach(word => {
                     if (!(word in dict)) dict[word] = 1;
                     else dict[word]++;
                 });
@@ -46,7 +44,7 @@ app.get('/GetRedditTitles', (req, res) => {
                     value: dict[key],
                 })
             );
-            
+
             res.send(results);
     }).catch((e) => {
         res.status(e.statusCode).send(e.message);
