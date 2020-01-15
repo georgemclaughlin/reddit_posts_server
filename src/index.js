@@ -54,4 +54,8 @@ app.get('/GetRedditTitles', (req, res) => {
 
 app.listen(process.env.PORT, () =>
   console.log(`Example app listening on port ${process.env.PORT}!`),
+//   console.log(`userAgent ${process.env.USER_AGENT}`),
+//   console.log(`clientId ${process.env.CLIENT_ID}`),
+//   console.log(`clientSecret ${process.env.CLIENT_SECRET}`),
+//   console.log(`refreshToken ${process.env.REFRESH_TOKEN}`),
 );
