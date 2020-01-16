@@ -17,7 +17,11 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - run: |
-        docker build -t georgemclaughlin/reddit_posts_server:${{ github.sha }} -t georgemclaughlin/reddit_posts_server:latest -t us.gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/reddit_posts_server:${{ github.sha }} .
+        docker build -t georgemclaughlin/reddit_posts_server:${{ github.sha }} \
+                     -t georgemclaughlin/reddit_posts_server:latest \
+                     -t us.gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/reddit_posts_server:${{ github.sha }} \
+                     -t us.gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/reddit_posts_server:latest \
+                     .
         docker push georgemclaughlin/reddit_posts_server
         
     - uses: actions-hub/gcloud@272.0.0
