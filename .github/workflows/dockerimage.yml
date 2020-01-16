@@ -18,4 +18,4 @@ jobs:
 
     - run: |
         docker build -t georgemclaughlin/reddit_posts_server:${{ github.sha }} -t georgemclaughlin/reddit_posts_server:latest .
-        docker push georgemclaughlin/reddit_posts_server:${{ github.sha }}
+        docker push georgemclaughlin/reddit_posts_server
