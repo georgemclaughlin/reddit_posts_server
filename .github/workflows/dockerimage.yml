@@ -32,3 +32,15 @@ jobs:
         args: |
           auth configure-docker
           docker push us.gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/reddit_posts_server
+          
+    - uses: actions-hub/gcloud@272.0.0
+      env:
+        PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
+        APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      with: 
+        args: |
+          run deploy redditpostsserver \
+          --image us.gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/reddit_posts_server:${{ github.sha }} \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated
