@@ -9,14 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout code
+      uses: actions/checkout@v1
 
-    - uses: azure/docker-login@v1
+    - name: Set login for Docker Hub
+      uses: azure/docker-login@v1
       with:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
-    - run: |
+    - name: Build and Tag Image, push to Docker Hub
+      run: |
         docker build -t georgemclaughlin/reddit_posts_server:${{ github.sha }} \
                      -t georgemclaughlin/reddit_posts_server:latest \
                      -t us.gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/reddit_posts_server:${{ github.sha }} \
@@ -24,7 +27,8 @@ jobs:
                      .
         docker push georgemclaughlin/reddit_posts_server
         
-    - uses: actions-hub/gcloud@272.0.0
+    - name: Set gcloud credentials and push to Google Container Registry
+      uses: actions-hub/gcloud@272.0.0
       env:
         PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
         APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
@@ -33,7 +37,8 @@ jobs:
           auth configure-docker
           docker push us.gcr.io/${{ secrets.GOOGLE_PROJECT_ID }}/reddit_posts_server
           
-    - uses: actions-hub/gcloud@272.0.0
+    - name: Deploy new Docker Image to Cloud Run
+      uses: actions-hub/gcloud@272.0.0
       env:
         PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
         APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
